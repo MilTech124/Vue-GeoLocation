@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "firebase": "^9.8.3",
+    "slugify": "^1.6.5",
     "vue": "^3.2.37",
     "vue-router": "^4.0.16"
   },

@@ -1,16 +1,20 @@
 <template>
   <div class="navbar">
     <nav class="container">
-        <a href="" class="brand-logo">VueGeo</a>
+        <router-link :to="{name:'GMap'}">GeoLocation</router-link>
         <ul class="right">
-            <li><a href="">Singup</a></li>
-            <li><a href="">Login</a></li>
+            <li> <router-link :to="{name:'Signup'}">Signup</router-link></li>
+            <li> <router-link :to="{name:'Login'}">Login</router-link></li>
+            <li><a @click="logout" >Logout</a></li>
+          
         </ul>
     </nav>
   </div>
 </template>
 
 <script>
+import { signOut,} from '@firebase/auth'
+import {auth} from '@/firebase/init'
 export default {
 name:'Navbar',
 data(){
@@ -19,6 +23,14 @@ data(){
 
     }
 
+},
+
+methods:{
+  logout(){
+signOut(auth).then(()=>{
+  this.$router.push({name:'Login'})
+})
+  }
 }
 }
 </script>

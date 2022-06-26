@@ -1,0 +1,62 @@
+<template>
+  
+  <div class="login container">
+    <form @submit.prevent="login" class="card-panel">
+        <h2 class="center deep-purple-text">Login</h2>
+         <div class="field">
+            <label for="email">Email:</label>
+            <input type="email" name="email" v-model="email">
+        </div>
+          <div class="field">
+            <label for="password">Password:</label>
+            <input type="password" name="password " v-model="password">
+        </div>
+        <p v-if="feedback" class="red-text center">{{feedback}}</p>
+        <div class="field" >
+            <button class="btn deep-purple">Login</button>
+        </div>
+    </form>
+  </div>
+</template>
+
+<script>
+import { signInWithEmailAndPassword } from "@firebase/auth";
+import { auth } from "@/firebase/init";
+export default {
+    name:'Login',
+    data(){
+        return{
+            email:null,
+            password:null,
+            feedback:null
+        }
+    },
+    methods:{
+      async login(){
+            if(this.email && this.email){
+                 this.feedback=null
+                 await signInWithEmailAndPassword(auth,this.email,this.password).then(this.$router.push({name:"GMap"})).catch(err=>this.feedback=err.message)
+            }else{
+                this.feedback='please fill fields'
+            }
+
+        }
+    }
+
+}
+</script>
+
+
+
+<style>
+.login{
+    max-width: 400px;
+    margin-top: 60px;
+}
+.login h2{
+    font-size: 2.4em;
+}
+.login .field {
+    margin-bottom: 16px;
+}
+</style>
