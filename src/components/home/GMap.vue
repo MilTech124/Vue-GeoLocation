@@ -1,6 +1,7 @@
 <template>
-  <div class="map">
+  <div class="map">  
    <div class="google-map" id="map"></div>
+   <div class="doc" v-if="documents" >{{documents[1].geolocation}}</div>
   </div>
 </template>
 
@@ -8,19 +9,25 @@
 import {db} from '@/firebase/init'
 import { auth } from "@/firebase/init";
 import getUser from '@/composables/getUser'
+import getCollection from '@/composables/getCollection'
 import {doc, updateDoc,query,where, collection, getDocs} from'firebase/firestore'
 export default {
 name:'GMap',
 data(){
+    
+
 
     return{
         lat:53,
-        lng:-2,        
+        lng:-2,   
+        documents:null,
+       
+       
     }
 }
 ,
 methods:{
-    renderMap(){
+   async renderMap(){
         const map= new google.maps.Map(document.getElementById('map'),{
             center:{lat:this.lat, lng:this.lng},
             zoom:10,
@@ -28,6 +35,24 @@ methods:{
             minZoom:3,
             streetViewControl:false
         })
+        const cordRef=collection(db,'users')
+            const tmp=await getDocs(cordRef)
+           tmp.forEach(docU=>{
+                let data =docU.data()
+                    if(data.geolocation){
+                        let marker=new google.maps.Marker({
+                            position:{
+                                lat:data.geolocation.lat,
+                                lng:data.geolocation.lng
+                            },
+                            map
+                        })
+                        marker.addListener('click',()=>{
+                            alert(docU.id)
+                        })
+                    }
+         })
+
     },
   async updateCords(lat,lng){
                const {user} =getUser()              
@@ -44,16 +69,21 @@ methods:{
 
                 })
         })
+    },
+     getCol(){
+        this.documents = getCollection('users')
+  
     }
 },
  mounted(){
+//  this.getCol()
 
-   
- 
+
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(pos=>{
         this.lat=pos.coords.latitude
         this.lng=pos.coords.longitude
+        
 
       
         this.updateCords(this.lat,this.lng)

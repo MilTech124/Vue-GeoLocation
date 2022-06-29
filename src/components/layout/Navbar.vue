@@ -1,13 +1,17 @@
 <template>
   <div class="navbar">
-    <nav class="container">
-        <router-link :to="{name:'GMap'}">GeoLocation</router-link>
+    <nav class="deep-purple darken-1">
+      <div class="container">
+        <router-link :to="{name:'GMap'}" class="brand-logo left">GeoLocation</router-link>
         <ul class="right">
-            <li> <router-link :to="{name:'Signup'}">Signup</router-link></li>
-            <li> <router-link :to="{name:'Login'}">Login</router-link></li>
-            <li><a @click="logout" >Logout</a></li>
+            <li v-if="!user"> <router-link :to="{name:'Signup'}">Signup</router-link></li>
+            <li v-if="!user"> <router-link :to="{name:'Login'}">Login</router-link></li>
+            <li v-if="user"><a>{{user.email}}</a></li>
+            <li v-if="user"><a @click="logout" >Logout</a></li>
+           
           
         </ul>
+        </div>
     </nav>
   </div>
 </template>
@@ -15,12 +19,13 @@
 <script>
 import { signOut,} from '@firebase/auth'
 import {auth} from '@/firebase/init'
+import getUser from '@/composables/getUser'
 export default {
 name:'Navbar',
 data(){
-    
+    const {user} =getUser()
     return{
-
+      user
     }
 
 },
